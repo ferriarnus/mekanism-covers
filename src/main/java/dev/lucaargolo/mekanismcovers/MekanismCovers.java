@@ -22,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -102,13 +103,4 @@ public class MekanismCovers {
             return null;
         }
     }
-
-    @NotNull
-    public static ModelData getModelData(BlockState state, Level level, BlockPos worldPosition) {
-        if (level.isClientSide) {
-            return MekanismCoversClient.getModelData(state, level, worldPosition);
-        }
-        return ModelData.EMPTY;
-    }
-
 }

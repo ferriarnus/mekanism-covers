@@ -8,13 +8,16 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -95,5 +98,15 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
             }
         }
         return super.getParticleIcon(extraData);
+    }
+
+    @Override
+    public @NotNull ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        ModelData data = super.getModelData(level, pos, state, modelData);
+        BlockState coverState = data.get(MekanismCovers.COVER_STATE);
+        if (coverState != null) {
+            data = data.derive().with(MekanismCovers.COVER_DATA, MekanismCoversClient.getModelData(coverState, level, pos)).build();
+        }
+        return data;
     }
 }

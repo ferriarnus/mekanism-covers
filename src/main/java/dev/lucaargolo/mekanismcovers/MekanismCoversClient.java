@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -176,8 +177,7 @@ public class MekanismCoversClient {
     }
 
     @NotNull
-    public static ModelData getModelData(BlockState state, Level level, BlockPos worldPosition) {
+    public static ModelData getModelData(BlockState state, BlockAndTintGetter level, BlockPos worldPosition) {
         return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).getModelData(level, worldPosition, state, ModelData.EMPTY);
     }
-
 }
