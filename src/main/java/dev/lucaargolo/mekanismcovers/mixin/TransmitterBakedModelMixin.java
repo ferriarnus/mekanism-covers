@@ -38,13 +38,14 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
         if(extraData.has(MekanismCovers.COVER_STATE)) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockState coverState = extraData.get(MekanismCovers.COVER_STATE);
+            ModelData data = extraData.get(MekanismCovers.COVER_DATA) == null ? ModelData.EMPTY : extraData.get(MekanismCovers.COVER_DATA);
             if(coverState != null) {
                 BakedModel bakedModel = minecraft.getBlockRenderer().getBlockModel(coverState);
                 boolean transparent = MekanismCoversClient.isCoverTransparentFast();
                 if(transparent) {
                     if(renderType == RenderType.translucent()) {
                         if(MekanismCoversClient.ADVANCED_COVER_RENDERING) {
-                            List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, extraData, renderType);
+                            List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, data, renderType);
                             coverQuads.forEach(q -> ((BakedQuadAccessor) q).setTintIndex(1337));
                             cir.setReturnValue(Stream.concat(originalQuads.stream(), coverQuads.stream()).toList());
                         }else{
@@ -55,7 +56,7 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
                     }
                 }else{
                     if(renderType != null && bakedModel.getRenderTypes(coverState, rand, ModelData.EMPTY).contains(renderType)) {
-                        List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, extraData, renderType);
+                        List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, data, renderType);
                         coverQuads.forEach(q -> ((BakedQuadAccessor) q).setTintIndex(1337));
                         cir.setReturnValue(Stream.concat(originalQuads.stream(), coverQuads.stream()).toList());
                     }

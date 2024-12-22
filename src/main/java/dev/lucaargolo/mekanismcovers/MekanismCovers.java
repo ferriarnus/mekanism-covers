@@ -29,11 +29,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Mod(MekanismCovers.MODID)
@@ -52,6 +54,8 @@ public class MekanismCovers {
     public static final DeferredHolder<RecipeSerializer<?>, SimpleCraftingRecipeSerializer<CoverRecipe>> COVER_SERIALIZER = RECIPE_SERIALIZERS.register("crafting_special_cover", () -> new SimpleCraftingRecipeSerializer<>(CoverRecipe::new));
 
     public static final ModelProperty<BlockState> COVER_STATE = new ModelProperty<>();
+    public static final ModelProperty<ModelData> COVER_DATA = new ModelProperty<>();
+
 
     public MekanismCovers(IEventBus modEventBus, ModContainer modContainer) {
         ITEMS.register(modEventBus);
@@ -97,6 +101,14 @@ public class MekanismCovers {
         }catch (IllegalStateException ignored) {
             return null;
         }
+    }
+
+    @NotNull
+    public static ModelData getModelData(BlockState state, Level level, BlockPos worldPosition) {
+        if (level.isClientSide) {
+            return MekanismCoversClient.getModelData(state, level, worldPosition);
+        }
+        return ModelData.EMPTY;
     }
 
 }

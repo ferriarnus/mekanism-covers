@@ -4,19 +4,24 @@ import dev.lucaargolo.mekanismcovers.MekanismCovers;
 import dev.lucaargolo.mekanismcovers.mixed.TileEntityTransmitterMixed;
 import mekanism.api.IAlloyInteraction;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
+import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,6 +30,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = TileEntityTransmitter.class)
 public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity implements ProxyConfigurable.ISidedConfigurable, IAlloyInteraction, TileEntityTransmitterMixed {
+
+    @Shadow public abstract Transmitter<?, ?, ?> getTransmitter();
 
     @Unique
     private BlockState mekanism_covers$coverState = null;
@@ -45,6 +52,7 @@ public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity im
         }
         if(this.mekanism_covers$coverState != null) {
             builder.with(MekanismCovers.COVER_STATE, this.mekanism_covers$coverState);
+            builder.with(MekanismCovers.COVER_DATA, MekanismCovers.getModelData(this.mekanism_covers$coverState, level, worldPosition));
         }
         cir.setReturnValue(builder.build());
     }
@@ -86,6 +94,8 @@ public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity im
             BlockStateParser.BlockResult result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), serialized, false);
             this.mekanism_covers$coverState = result.blockState();
             this.mekanism_covers$updateClientLight = true;
+            this.requestModelDataUpdate();
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }catch (Exception exception) {
             this.mekanism_covers$coverState = null;
         }

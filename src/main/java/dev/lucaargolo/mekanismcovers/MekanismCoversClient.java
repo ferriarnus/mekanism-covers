@@ -9,12 +9,14 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -23,6 +25,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import org.jetbrains.annotations.NotNull;
 
 import static dev.lucaargolo.mekanismcovers.MekanismCovers.MODID;
 
@@ -169,6 +173,11 @@ public class MekanismCoversClient {
         }else {
             return source;
         }
+    }
+
+    @NotNull
+    public static ModelData getModelData(BlockState state, Level level, BlockPos worldPosition) {
+        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).getModelData(level, worldPosition, state, ModelData.EMPTY);
     }
 
 }
