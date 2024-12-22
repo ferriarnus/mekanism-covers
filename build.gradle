@@ -92,6 +92,10 @@ dependencies {
     implementation("mekanism:Mekanism:${mekanism_version}:additions")
     implementation("mekanism:Mekanism:${mekanism_version}:generators")
     implementation("mekanism:Mekanism:${mekanism_version}:tools")
+
+    runtimeOnly("maven.modrinth:athena-ctm:4.0.1")
+    runtimeOnly("maven.modrinth:chipped:4.0.2")
+    runtimeOnly("maven.modrinth:resourceful-lib:3.0.11")
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

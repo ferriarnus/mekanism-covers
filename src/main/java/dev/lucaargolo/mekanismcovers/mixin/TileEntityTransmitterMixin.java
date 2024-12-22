@@ -35,14 +35,9 @@ public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity im
         super(type, pos, state);
     }
 
-    @SuppressWarnings({"DataFlowIssue", "rawtypes", "unchecked"})
     @Inject(at = @At("RETURN"), method = "getModelData", cancellable = true, remap = false)
     public void injectCoverModel(CallbackInfoReturnable<ModelData> cir) {
-        ModelData data = cir.getReturnValue();
-        ModelData.Builder builder = ModelData.builder();
-        for(ModelProperty property : data.getProperties()) {
-            builder.with(property, data.get(property));
-        }
+        ModelData.Builder builder = cir.getReturnValue().derive();
         if(this.mekanism_covers$coverState != null) {
             builder.with(MekanismCovers.COVER_STATE, this.mekanism_covers$coverState);
         }
