@@ -3,6 +3,7 @@ package dev.lucaargolo.mekanismcovers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -79,7 +80,8 @@ public class CoverRecipe extends CustomRecipe {
 
         for(int i = 0; i < list.size(); ++i) {
             ItemStack stack = input.getItem(i);
-            Block coverBlock = MekanismCovers.getBlock(stack.get(MekanismCovers.COVER_BLOCK));
+            ResourceLocation coverId = stack.get(MekanismCovers.COVER_BLOCK);
+            Block coverBlock = coverId != null ? MekanismCovers.getBlock(coverId) : null;
             if (coverBlock != null) {
                 list.set(i, coverBlock.asItem().getDefaultInstance());
             }
