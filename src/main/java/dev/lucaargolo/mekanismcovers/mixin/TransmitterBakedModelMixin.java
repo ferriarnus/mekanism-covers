@@ -8,13 +8,16 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,13 +41,14 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
         if(extraData.has(MekanismCovers.COVER_STATE)) {
             Minecraft minecraft = Minecraft.getInstance();
             BlockState coverState = extraData.get(MekanismCovers.COVER_STATE);
+            ModelData data = extraData.get(MekanismCovers.COVER_DATA) == null ? ModelData.EMPTY : extraData.get(MekanismCovers.COVER_DATA);
             if(coverState != null) {
                 BakedModel bakedModel = minecraft.getBlockRenderer().getBlockModel(coverState);
                 boolean transparent = MekanismCoversClient.isCoverTransparentFast();
                 if(transparent) {
                     if(renderType == RenderType.translucent()) {
                         if(MekanismCoversClient.ADVANCED_COVER_RENDERING) {
-                            List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, extraData, renderType);
+                            List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, data, renderType);
                             coverQuads.forEach(q -> ((BakedQuadAccessor) q).setTintIndex(1337));
                             cir.setReturnValue(Stream.concat(originalQuads.stream(), coverQuads.stream()).toList());
                         }else{
@@ -55,7 +59,7 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
                     }
                 }else{
                     if(renderType != null && bakedModel.getRenderTypes(coverState, rand, ModelData.EMPTY).contains(renderType)) {
-                        List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, extraData, renderType);
+                        List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, data, renderType);
                         coverQuads.forEach(q -> ((BakedQuadAccessor) q).setTintIndex(1337));
                         cir.setReturnValue(Stream.concat(originalQuads.stream(), coverQuads.stream()).toList());
                     }
@@ -94,5 +98,15 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
             }
         }
         return super.getParticleIcon(extraData);
+    }
+
+    @Override
+    public @NotNull ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        ModelData data = super.getModelData(level, pos, state, modelData);
+        BlockState coverState = data.get(MekanismCovers.COVER_STATE);
+        if (coverState != null) {
+            data = data.derive().with(MekanismCovers.COVER_DATA, MekanismCoversClient.getModelData(coverState, level, pos)).build();
+        }
+        return data;
     }
 }
