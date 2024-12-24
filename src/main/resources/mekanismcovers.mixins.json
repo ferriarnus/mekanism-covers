@@ -13,10 +13,6 @@
     "TileEntityTransmitterMixin"
   ],
   "client": [
-    "iris.SodiumProgramsMixin",
-    "iris.BlockMaterialMappingMixin",
-    "iris.CommonUniformsMixin",
-    "iris.CustomUniformsMixin",
     "sodium.SodiumBlockRendererMixin",
     "embeddium.EmbeddiumBlockRendererMixin",
     "MinecraftMixin",

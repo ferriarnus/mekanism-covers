@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,7 +46,7 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
                 boolean transparent = MekanismCoversClient.isCoverTransparentFast();
                 if(transparent) {
                     if(renderType == RenderType.translucent()) {
-                        if(MekanismCoversClient.ADVANCED_COVER_RENDERING) {
+                        if(MekanismCoversClient.ADVANCED_COVER_RENDERING && !MekanismCoversClient.hasShaderPack()) {
                             List<BakedQuad> coverQuads = bakedModel.getQuads(coverState, side, rand, data, renderType);
                             coverQuads.forEach(q -> ((BakedQuadAccessor) q).setTintIndex(1337));
                             cir.setReturnValue(Stream.concat(originalQuads.stream(), coverQuads.stream()).toList());
@@ -101,7 +100,7 @@ public class TransmitterBakedModelMixin extends BakedModelWrapper<BakedModel> {
     }
 
     @Override
-    public @NotNull ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData modelData) {
         ModelData data = super.getModelData(level, pos, state, modelData);
         BlockState coverState = data.get(MekanismCovers.COVER_STATE);
         if (coverState != null) {

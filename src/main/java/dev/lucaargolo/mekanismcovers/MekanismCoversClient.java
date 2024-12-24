@@ -21,12 +21,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 import static dev.lucaargolo.mekanismcovers.MekanismCovers.MODID;
 
@@ -179,4 +183,17 @@ public class MekanismCoversClient {
     public static ModelData getModelData(BlockState state, BlockAndTintGetter level, BlockPos worldPosition) {
         return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).getModelData(level, worldPosition, state, ModelData.EMPTY);
     }
+
+    @SuppressWarnings("rawtypes")
+    public static boolean hasShaderPack() {
+        try {
+            Class<?> irisClass = Thread.currentThread().getContextClassLoader().loadClass("net.irisshaders.iris.Iris");
+            Method packMethod = irisClass.getDeclaredMethod("getCurrentPack");
+            Optional optional = (Optional) packMethod.invoke(null);
+            return optional.isPresent();
+        }catch (Exception ignored) {
+            return false;
+        }
+    }
+
 }

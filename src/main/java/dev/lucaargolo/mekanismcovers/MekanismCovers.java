@@ -1,16 +1,10 @@
 package dev.lucaargolo.mekanismcovers;
 
-import com.mojang.serialization.Codec;
 import dev.lucaargolo.mekanismcovers.mixed.TileEntityTransmitterMixed;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
