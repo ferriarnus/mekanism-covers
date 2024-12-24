@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,18 +51,15 @@ public abstract class BlockTransmitterMixin extends BlockMekanism implements ISt
     }
 
     @Override
-    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        int ambientLight = super.getLightEmission(state, world, pos);
-        if (ambientLight != 15) {
-            TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
-            if (tile instanceof TileEntityTransmitterMixed transmitter) {
-                BlockState coverState = transmitter.mekanism_covers$getCoverState();
-                if (coverState != null) {
-                    ambientLight = Math.max(ambientLight, coverState.getLightEmission(world, pos));
-                }
-            }
-        }
-        return ambientLight;
+    public int getLightEmission(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+        AuxiliaryLightManager lightManager = world.getAuxLightManager(pos);
+        if (lightManager != null) return lightManager.getLightAt(pos);
+        return super.getLightEmission(state, world, pos);
+    }
+
+    @Override
+    public boolean hasDynamicLightEmission(@NotNull BlockState state) {
+        return true;
     }
 
     @Override
@@ -69,7 +68,7 @@ public abstract class BlockTransmitterMixin extends BlockMekanism implements ISt
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
+    public @NotNull BlockState getAppearance(@NotNull BlockState state, @NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, level, pos);
         if(tile instanceof TileEntityTransmitterMixed transmitter && transmitter.mekanism_covers$getCoverState() != null) {
             return transmitter.mekanism_covers$getCoverState();

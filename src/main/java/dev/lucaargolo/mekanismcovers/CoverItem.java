@@ -18,7 +18,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -30,6 +33,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +66,10 @@ public class CoverItem extends Item {
                     level.setBlockAndUpdate(pos, state.setValue(BlockStateHelper.FLUID_LOGGED, FluidLogType.EMPTY));
                 }
                 level.sendBlockUpdated(pos, state, state, 3);
+                AuxiliaryLightManager lightManager = level.getAuxLightManager(pos);
+                if(lightManager != null) {
+                    lightManager.setLightAt(pos, coverState != null ? coverState.getLightEmission(level, pos) : 0);
+                }
                 level.getLightEngine().checkBlock(pos);
             }
             return InteractionResult.SUCCESS;

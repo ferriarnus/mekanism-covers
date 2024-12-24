@@ -23,10 +23,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +70,10 @@ public class MekanismCovers {
         transmitter.mekanism_covers$setCoverState(null);
         tile.setChanged();
         world.sendBlockUpdated(pos, state, state, 3);
+        AuxiliaryLightManager lightManager = world.getAuxLightManager(pos);
+        if(lightManager != null) {
+            lightManager.setLightAt(pos, 0);
+        }
         world.getLightEngine().checkBlock(pos);
         if(world instanceof ServerLevel serverLevel) {
             for (ServerPlayer player : serverLevel.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)) {

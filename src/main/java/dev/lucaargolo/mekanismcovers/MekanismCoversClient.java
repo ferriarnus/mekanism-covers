@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -129,53 +128,6 @@ public class MekanismCoversClient {
             return transparent;
         } else {
             return false;
-        }
-    }
-
-    public static String modifyIrisVertex(String source) {
-        if(MekanismCoversClient.COVER_ENTITY_ID != null) {
-            String[] lines = source.split("\n");
-
-            StringBuilder modifiedSource = new StringBuilder();
-            modifiedSource.append(lines[0]).append("\n");
-            if(!source.contains("mc_Entity")) {
-                modifiedSource.append("in uint mc_Entity;\n");
-            }
-            if(!source.contains("iris_Entity")) {
-                modifiedSource.append("vec4 iris_Entity = vec4(int(mc_Entity >> 1u) - 1, mc_Entity & 1u, 0.0f, 1.0f);");
-            }
-            modifiedSource.append("flat out int mekanismCoverInjectMat;\n");
-            for (int i = 1; i < lines.length - 1; i++) {
-                modifiedSource.append(lines[i]).append("\n");
-            }
-            modifiedSource.append("mekanismCoverInjectMat = int(iris_Entity.x + 0.5);\n");
-            modifiedSource.append(lines[lines.length - 1]);
-
-            return modifiedSource.toString();
-        }else {
-            return source;
-        }
-    }
-
-    public static String modifyIrisFragment(String source) {
-        if(MekanismCoversClient.COVER_ENTITY_ID != null) {
-            String[] lines = source.split("\n");
-
-            StringBuilder modifiedSource = new StringBuilder();
-            modifiedSource.append(lines[0]).append("\n");
-            modifiedSource.append("flat in int mekanismCoverInjectMat;\n");
-            modifiedSource.append("uniform float mkcv_CoverTransparency;\n");
-            for (int i = 1; i < lines.length - 1; i++) {
-                modifiedSource.append(lines[i]).append("\n");
-            }
-            modifiedSource.append("if(mekanismCoverInjectMat == ").append(MekanismCoversClient.COVER_ENTITY_ID).append(") {\n");
-            modifiedSource.append("    iris_FragData0.a *= mkcv_CoverTransparency;\n");
-            modifiedSource.append("}\n");
-            modifiedSource.append(lines[lines.length - 1]);
-
-            return modifiedSource.toString();
-        }else {
-            return source;
         }
     }
 

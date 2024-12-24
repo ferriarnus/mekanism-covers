@@ -15,7 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -58,6 +58,10 @@ public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity im
             BlockStateParser.BlockResult result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), serialized, false);
             this.mekanism_covers$coverState = result.blockState();
             if(this.level != null) {
+                AuxiliaryLightManager lightManager = this.level.getAuxLightManager(this.worldPosition);
+                if(lightManager != null) {
+                    lightManager.setLightAt(this.worldPosition, mekanism_covers$coverState != null ? mekanism_covers$coverState.getLightEmission(this.level, this.worldPosition) : 0);
+                }
                 this.level.getLightEngine().checkBlock(this.worldPosition);
             }
         }catch (Exception exception) {
@@ -90,6 +94,10 @@ public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity im
     public void mekanism_covers$onUpdateClient() {
         if (this.mekanism_covers$updateClientLight) {
             if(this.level != null) {
+                AuxiliaryLightManager lightManager = this.level.getAuxLightManager(this.worldPosition);
+                if(lightManager != null) {
+                    lightManager.setLightAt(this.worldPosition, mekanism_covers$coverState != null ? mekanism_covers$coverState.getLightEmission(this.level, this.worldPosition) : 0);
+                }
                 this.level.getLightEngine().checkBlock(this.worldPosition);
                 this.mekanism_covers$updateClientLight = !this.level.getLightEngine().lightOnInSection(SectionPos.of(this.worldPosition));
             }
