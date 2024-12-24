@@ -20,7 +20,7 @@ public abstract class SodiumBlockRendererMixin extends AbstractBlockRenderContex
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/model/color/ColorProvider;getColors(Lnet/caffeinemc/mods/sodium/client/world/LevelSlice;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos$MutableBlockPos;Ljava/lang/Object;Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadView;[I)V", shift = At.Shift.AFTER), method = "colorizeQuad")
     public void putTranslucentVertexColor(MutableQuadViewImpl quad, int colorIndex, CallbackInfo ci) {
-        if(colorIndex == 1337 && MekanismCoversClient.isCoverTransparentFast() && this.state.getBlock() instanceof BlockTransmitter) {
+        if((quad.getColorIndex() == 1337 || quad.getColorIndex() == 1338) && MekanismCoversClient.isCoverTransparentFast() && this.state.getBlock() instanceof BlockTransmitter) {
             for (int i = 0; i < vertexColors.length; i++) {
                 vertexColors[i] = ColorARGB.pack(ColorARGB.unpackRed(vertexColors[i]), ColorARGB.unpackGreen(vertexColors[i]), ColorARGB.unpackBlue(vertexColors[i]), 255/3);
             }

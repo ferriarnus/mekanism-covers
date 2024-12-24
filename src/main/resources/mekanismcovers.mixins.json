@@ -6,6 +6,7 @@
   "refmap": "mekanismcovers.refmap.json",
   "plugin": "dev.lucaargolo.mekanismcovers.CompatMixinPlugin",
   "mixins": [
+    "BlockBaseMixin",
     "BlockMekanismMixin",
     "BlockStateBaseMixin",
     "BlockTransmitterMixin",
@@ -13,13 +14,12 @@
     "TileEntityTransmitterMixin"
   ],
   "client": [
-    "sodium.SodiumBlockRendererMixin",
-    "embeddium.EmbeddiumBlockRendererMixin",
+    "ClientBlockTransmitterMixin",
     "MinecraftMixin",
-    "BakedQuadAccessor",
     "ModelBlockRendererMixin",
     "TransmitterBakedModelMixin",
-    "ClientBlockTransmitterMixin"
+    "embeddium.EmbeddiumBlockRendererMixin",
+    "sodium.SodiumBlockRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,7 +1,6 @@
 package dev.lucaargolo.mekanismcovers.mixin.embeddium;
 
 import dev.lucaargolo.mekanismcovers.MekanismCoversClient;
-
 import mekanism.common.block.transmitter.BlockTransmitter;
 import net.minecraft.world.phys.Vec3;
 import org.embeddedt.embeddium.api.render.chunk.BlockRenderContext;
@@ -21,7 +20,7 @@ public class EmbeddiumBlockRendererMixin {
 
     @Inject(at = @At("HEAD"), method = "writeGeometry")
     public void putTranslucentVertexColor(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset, Material material, BakedQuadView quad, int[] colors, QuadLightData light, CallbackInfo ci) {
-        if(quad.getColorIndex() == 1337 && MekanismCoversClient.isCoverTransparentFast() && ctx.state().getBlock() instanceof BlockTransmitter) {
+        if((quad.getColorIndex() == 1337 || quad.getColorIndex() == 1338) && MekanismCoversClient.isCoverTransparentFast() && ctx.state().getBlock() instanceof BlockTransmitter) {
             for (int i = 0; i < colors.length; i++) {
                 colors[i] = ColorARGB.pack(ColorARGB.unpackRed(colors[i]), ColorARGB.unpackGreen(colors[i]), ColorARGB.unpackBlue(colors[i]), 255/3);
             }

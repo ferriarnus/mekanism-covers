@@ -27,7 +27,7 @@ public class BlockBaseMixin {
             if (!world.isClientSide) {
                 BlockEntity tile = world.getBlockEntity(pos);
                 if(tile instanceof TileEntityTransmitterMixed transmitter && transmitter.mekanism_covers$getCoverState() != null) {
-                    MekanismCovers.removeCover(world, tile, state, pos, transmitter);
+                    MekanismCovers.removeCover(world, tile, state, pos, transmitter, true);
                     cir.setReturnValue(ItemInteractionResult.SUCCESS);
                 }
             }

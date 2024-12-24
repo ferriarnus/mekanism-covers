@@ -62,22 +62,24 @@ public class MekanismCovers {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EMPTY_COVER.get());
     }
 
-    public static void removeCover(Level world, BlockEntity tile, BlockState state, BlockPos pos, TileEntityTransmitterMixed transmitter) {
+    public static void removeCover(Level world, BlockEntity tile, BlockState state, BlockPos pos, TileEntityTransmitterMixed transmitter, boolean update) {
         BlockState coverState = transmitter.mekanism_covers$getCoverState();
         ItemStack currentStack = new ItemStack(MekanismCovers.COVER);
         currentStack.set(COVER_BLOCK, getKey(coverState.getBlock()));
         Containers.dropItemStack(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, currentStack);
-        transmitter.mekanism_covers$setCoverState(null);
-        tile.setChanged();
-        world.sendBlockUpdated(pos, state, state, 3);
-        AuxiliaryLightManager lightManager = world.getAuxLightManager(pos);
-        if(lightManager != null) {
-            lightManager.setLightAt(pos, 0);
-        }
-        world.getLightEngine().checkBlock(pos);
-        if(world instanceof ServerLevel serverLevel) {
-            for (ServerPlayer player : serverLevel.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)) {
-                player.connection.send(new ClientboundLightUpdatePacket(new ChunkPos(pos), world.getLightEngine(), null, null));
+        if(update) {
+            transmitter.mekanism_covers$setCoverState(null);
+            tile.setChanged();
+            world.sendBlockUpdated(pos, state, state, 3);
+            AuxiliaryLightManager lightManager = world.getAuxLightManager(pos);
+            if (lightManager != null) {
+                lightManager.removeLightAt(pos);
+            }
+            world.getLightEngine().checkBlock(pos);
+            if (world instanceof ServerLevel serverLevel) {
+                for (ServerPlayer player : serverLevel.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)) {
+                    player.connection.send(new ClientboundLightUpdatePacket(new ChunkPos(pos), world.getLightEngine(), null, null));
+                }
             }
         }
     }
