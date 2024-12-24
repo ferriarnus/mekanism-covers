@@ -85,12 +85,14 @@ dependencies {
     implementation("org.sinytra.forgified-fabric-api:fabric-block-view-api-v2:1.0.10+9afaaf8c19")
     implementation("maven.modrinth:iris:${iris_version}")
 
-    compileOnly("maven.modrinth:embeddium:1.0.11+mc1.21.1")
+    compileOnly("maven.modrinth:embeddium:${embeddium_version}")
 
     implementation("mekanism:Mekanism:${mekanism_version}")
     implementation("mekanism:Mekanism:${mekanism_version}:additions")
     implementation("mekanism:Mekanism:${mekanism_version}:generators")
     implementation("mekanism:Mekanism:${mekanism_version}:tools")
+
+    implementation("maven.modrinth:jade:${jade_version}")
 
     runtimeOnly("maven.modrinth:athena-ctm:4.0.1")
     runtimeOnly("maven.modrinth:chipped:4.0.2")
