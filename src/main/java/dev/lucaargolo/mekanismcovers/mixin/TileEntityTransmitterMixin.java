@@ -84,9 +84,11 @@ public abstract class TileEntityTransmitterMixin extends CapabilityTileEntity im
             String serialized = tag.getString("CoverState");
             BlockStateParser.BlockResult result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), serialized, false);
             this.mekanism_covers$coverState = result.blockState();
+            MekanismCovers.POSSIBLE_BLOCKS.put(this.worldPosition, this.mekanism_covers$coverState);
             this.mekanism_covers$updateClientLight = true;
         }catch (Exception exception) {
             this.mekanism_covers$coverState = null;
+            MekanismCovers.POSSIBLE_BLOCKS.remove(this.worldPosition);
         }
     }
 
